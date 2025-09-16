@@ -1,64 +1,92 @@
+// components/Chatbot.js
 import React, { useState } from "react";
-import "../styles/chatbot-style.css";
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [inputValue, setInputValue] = useState("");
   const [messages, setMessages] = useState([
     {
       type: "admin",
-      text: "Hi! How can I assist you in finding the right solution for your need?",
       avatar: "/chatbot-widget/images/vic-avatar.png",
+      content: "Hi! How can I assist you in finding the right solution for your need?",
     },
   ]);
-  const [input, setInput] = useState("");
 
-  const toggleChat = () => setIsOpen(!isOpen);
+  const commonQuestions = [
+    "I want to buy products",
+    "I need admin help",
+    "Can I call you directly?",
+  ];
+
+  const startConversation = () => {
+    setIsOpen(true);
+    setIsMinimized(false);
+  };
+
+  const closeChatbot = () => {
+    setIsOpen(false);
+    setIsMinimized(false);
+    setInputValue("");
+  };
+
+  const minimizeChatbot = () => {
+    setIsMinimized(true);
+  };
+
+  const handleInputChange = (e) => setInputValue(e.target.value);
 
   const handleSend = () => {
-    if (!input.trim()) return;
-    setMessages([...messages, { type: "user", text: input }]);
-    setInput("");
-    // Mock admin response
+    if (!inputValue.trim()) return;
+    setMessages([...messages, { type: "user", content: inputValue }]);
+    setInputValue("");
+
+    // Simulate admin response
     setTimeout(() => {
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
         {
           type: "admin",
-          text: `You said: ${input}`,
           avatar: "/chatbot-widget/images/vic-avatar.png",
+          content: "Thank you! We will assist you shortly.",
         },
       ]);
-    }, 800);
+    }, 1000);
   };
 
-  const handleQuestionClick = question => {
-    setInput(question);
-  };
+  const handleCommonQuestionClick = (question) => setInputValue(question);
 
   return (
     <div id="chatbot-container">
-      {/* Default Button */}
-      {!isOpen && (
-        <div id="chatbot-default-btn" className="chatbot-btn" onClick={toggleChat}>
-          <img src="/chatbot-widget/images/vic-avatar.png" alt="Vic" />
-          <button>
+      {!isOpen && !isMinimized && (
+        <div id="chatbot-default-btn" className="chatbot-btn">
+          <img id="vic-avatar-btn" src="/chatbot-widget/images/vic-avatar.png" alt="Vic" />
+          <button id="start-conversation-btn" onClick={startConversation}>
             <i className="dashicons dashicons-format-chat"></i> Start a conversation
           </button>
         </div>
       )}
 
-      {/* Chat Window */}
+      {isMinimized && (
+        <div id="chatbot-minimized-btn" className="chatbot-btn minimized-btn" onClick={() => setIsMinimized(false)}>
+          <div className="chatbot-icon-wrapper">
+            <img src="/chatbot-widget/images/chat-icon-minimized.png" alt="Chat Icon" />
+            <span className="notification-dot"></span>
+          </div>
+        </div>
+      )}
+
       {isOpen && (
         <div id="chatbot-window">
           <div className="chatbot-header">
             <div className="chatbot-header-info">
-              <img src="/chatbot-widget/images/vic-avatar.png" alt="Vic" />
+              <img id="vic-avatar-header" src="/chatbot-widget/images/vic-avatar.png" alt="Vic" />
               <span>Vic</span>
             </div>
             <div className="chatbot-header-actions">
               <i className="dashicons dashicons-phone phone-icon"></i>
-              <i className="dashicons dashicons-minus" onClick={toggleChat}></i>
-              <i className="dashicons dashicons-no" onClick={toggleChat}></i>
+              <i className="dashicons dashicons-minus minimize-btn" onClick={minimizeChatbot}></i>
+              <i className="dashicons dashicons-no close-btn" onClick={closeChatbot}></i>
             </div>
           </div>
 
@@ -66,39 +94,48 @@ const Chatbot = () => {
             {messages.map((msg, idx) => (
               <div
                 key={idx}
-                className={`chatbot-message ${
-                  msg.type === "admin" ? "chatbot-message-admin" : "chatbot-message-user"
-                }`}
+                className={`chatbot-message ${msg.type === "admin" ? "chatbot-message-admin" : "chatbot-message-user"}`}
+                style={{ justifyContent: msg.type === "user" ? "flex-end" : "flex-start" }}
               >
-                {msg.avatar && <img className="admin-avatar" src={msg.avatar} alt="Admin" />}
-                <div className="message-content">{msg.text}</div>
+                {msg.avatar && msg.type === "admin" && (
+                  <img className="admin-avatar" src={msg.avatar} alt="Admin" />
+                )}
+                <div className="message-content">{msg.content}</div>
               </div>
             ))}
 
             <div className="chatbot-common-questions">
-              {["I want to buy products", "I need admin help", "Can I call you directly?"].map(
-                (q, i) => (
-                  <div
-                    key={i}
-                    className="common-question"
-                    onClick={() => handleQuestionClick(q)}
-                  >
-                    {q}
-                  </div>
-                )
-              )}
+              {commonQuestions.map((q, idx) => (
+                <div
+                  key={idx}
+                  className="common-question"
+                  onClick={() => handleCommonQuestionClick(q)}
+                  data-question={q}
+                >
+                  {q}
+                </div>
+              ))}
             </div>
           </div>
 
           <div className="chatbot-footer">
             <input
               type="text"
-              value={input}
-              onChange={e => setInput(e.target.value)}
+              id="chatbot-input"
               placeholder="Tell us how can we help..."
+              value={inputValue}
+              onChange={handleInputChange}
             />
-            <button onClick={handleSend} disabled={!input.trim()}>
-              Send
+            <button
+              id="send-btn"
+              onClick={handleSend}
+              disabled={!inputValue.trim()}
+              style={{
+                backgroundColor: inputValue.trim() ? "rgb(1, 129, 151)" : "#ccc",
+                color: inputValue.trim() ? "#fff" : "#666",
+              }}
+            >
+              ➤
             </button>
           </div>
 
