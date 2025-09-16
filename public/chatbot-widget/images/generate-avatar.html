@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Avatar</title>
+</head>
+<body>
+    <canvas id="canvas" width="80" height="80"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Create a gradient background
+        const gradient = ctx.createRadialGradient(40, 40, 0, 40, 40, 40);
+        gradient.addColorStop(0, '#ff8700');
+        gradient.addColorStop(1, '#ff6600');
+        
+        // Draw circle background
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(40, 40, 40, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Draw cone shape (VLC style)
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(25, 65);
+        ctx.lineTo(40, 18);
+        ctx.lineTo(55, 65);
+        ctx.closePath();
+        ctx.fill();
+        
+        // Draw base
+        ctx.fillStyle = '#ff6600';
+        ctx.beginPath();
+        ctx.ellipse(40, 62, 12, 3, 0, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Download as image
+        const link = document.createElement('a');
+        link.download = 'admin-avatar.png';
+        link.href = canvas.toDataURL();
+        document.body.appendChild(link);
+        link.click();
+    </script>
+</body>
+</html>
