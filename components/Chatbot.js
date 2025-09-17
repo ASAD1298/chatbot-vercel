@@ -5,6 +5,7 @@ const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [hasSentMessage, setHasSentMessage] = useState(false);
   const [messages, setMessages] = useState([
     {
       type: "admin",
@@ -45,6 +46,9 @@ const Chatbot = () => {
     // Add user message
     setMessages(prev => [...prev, { type: "user", content: inputValue }]);
     
+    // Mark that user has sent a message
+    setHasSentMessage(true);
+    
     // Clear input field
     setInputValue("");
 
@@ -70,6 +74,9 @@ const Chatbot = () => {
   const handleCommonQuestionClick = (question) => {
     // Send the question directly instead of setting it in input
     setMessages(prev => [...prev, { type: "user", content: question }]);
+    
+    // Mark that user has sent a message
+    setHasSentMessage(true);
     
     // Simulate admin response
     setTimeout(() => {
@@ -137,18 +144,20 @@ const Chatbot = () => {
               )
             ))}
 
-            <div className="chatbot-common-questions">
-              {commonQuestions.map((q, idx) => (
-                <div
-                  key={idx}
-                  className="common-question"
-                  onClick={() => handleCommonQuestionClick(q)}
-                  data-question={q}
-                >
-                  {q}
-                </div>
-              ))}
-            </div>
+            {!hasSentMessage && (
+              <div className="chatbot-common-questions">
+                {commonQuestions.map((q, idx) => (
+                  <div
+                    key={idx}
+                    className="common-question"
+                    onClick={() => handleCommonQuestionClick(q)}
+                    data-question={q}
+                  >
+                    {q}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="chatbot-footer">
