@@ -492,10 +492,10 @@
 
 @media (max-width: 480px) {
     #chatbot-container {
-        bottom: 10px;
-        right: 10px;
-        left: 10px;
-        width: calc(100vw - 20px);
+        bottom: 0;
+        right: 0;
+        left: 0;
+        width: 100vw;
     }
     
     #chatbot-window {
@@ -506,7 +506,8 @@
         bottom: 0;
         right: 0;
         left: 0;
-        margin: 0 10px;
+        margin: 0;
+        border-radius: 0;
     }
     
     #chatbot-window.expanded {
@@ -562,9 +563,9 @@
     }
     
     #send-btn {
-        width: 50px;
-        height: 50px;
-        right: 20px;
+        width: 40px;
+        height: 40px;
+        right: 15px;
     }
     
     .common-question {
@@ -591,16 +592,17 @@
 
 @media (max-width: 360px) {
     #chatbot-container {
-        bottom: 5px;
-        right: 5px;
-        left: 5px;
+        bottom: 0;
+        right: 0;
+        left: 0;
     }
     
     #chatbot-window {
-        width: calc(100vw - 10px);
+        width: 100vw;
         height: 65vh;
         max-height: 450px;
         margin: 0;
+        border-radius: 0;
     }
     
     #chatbot-window.expanded {
@@ -637,8 +639,14 @@
     }
     
     #chatbot-input {
-        padding: 12px 65px 12px 12px;
+        padding: 12px 55px 12px 12px;
         font-size: 16px;
+    }
+    
+    #send-btn {
+        width: 36px;
+        height: 36px;
+        right: 12px;
     }
     
     .common-question {
