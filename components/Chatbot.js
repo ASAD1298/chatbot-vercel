@@ -146,6 +146,7 @@ const Chatbot = () => {
 
             {!hasSentMessage && (
               <div className="chatbot-common-questions">
+                <div className="common-questions-title">Common questions are:</div>
                 {commonQuestions.map((q, idx) => (
                   <div
                     key={idx}
