@@ -6,6 +6,7 @@ const Chatbot = () => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [hasSentMessage, setHasSentMessage] = useState(false);
+  const [showClearModal, setShowClearModal] = useState(false);
   const [messages, setMessages] = useState([
     {
       type: "admin",
@@ -27,13 +28,30 @@ const Chatbot = () => {
 
   const closeChatbot = () => {
     setIsOpen(false);
-    setIsMinimized(false);
+    setIsMinimized(true);
     setInputValue("");
   };
 
   const minimizeChatbot = () => {
-    setIsOpen(false);
-    setIsMinimized(true);
+    setShowClearModal(true);
+  };
+
+  const handleClearChat = () => {
+    // Clear chat and reset to initial state
+    setMessages([
+      {
+        type: "admin",
+        avatar: "/chatbot-widget/images/vic-avatar.png",
+        content: "Hi! How can I assist you in finding the right solution for your need?",
+      },
+    ]);
+    setHasSentMessage(false);
+    setInputValue("");
+    setShowClearModal(false);
+  };
+
+  const handleCancelClear = () => {
+    setShowClearModal(false);
   };
 
   const handleInputChange = (e) => {
@@ -117,6 +135,19 @@ const Chatbot = () => {
 
       {isOpen && (
         <div id="chatbot-window" className={hasSentMessage ? "expanded" : ""}>
+          {/* Clear Chat Confirmation Modal */}
+          {showClearModal && (
+            <div className="clear-modal-overlay">
+              <div className="clear-modal">
+                <h3 className="clear-modal-title">Clear chat</h3>
+                <p className="clear-modal-message">After clearing history you won't be able to access previous chats.</p>
+                <div className="clear-modal-actions">
+                  <button className="cancel-btn" onClick={handleCancelClear}>Cancel</button>
+                  <button className="clear-btn" onClick={handleClearChat}>Clear chat</button>
+                </div>
+              </div>
+            </div>
+          )}
           <div className="chatbot-header">
             <div className="chatbot-header-info">
               <img id="vic-avatar-header" src="/chatbot-widget/images/vic-avatar.png" alt="Vic" />
@@ -124,7 +155,7 @@ const Chatbot = () => {
             </div>
             <div className="chatbot-header-actions">
               <img src="/chatbot-widget/images/ic_round-call (1).png" alt="Call" className="header-icon call-icon" title="Call" />
-              <img src="/chatbot-widget/images/mdi_minimize.png" alt="Minimize" className="header-icon minimize-icon" onClick={minimizeChatbot} title="Minimize" />
+              <img src="/chatbot-widget/images/mdi_minimize.png" alt="Restart" className="header-icon minimize-icon" onClick={minimizeChatbot} title="Restart" />
               <img src="/chatbot-widget/images/basil_cross-solid.png" alt="Close" className="header-icon close-icon" onClick={closeChatbot} title="Close" />
             </div>
           </div>
