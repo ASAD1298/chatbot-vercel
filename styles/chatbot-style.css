@@ -636,9 +636,8 @@
     
     #chatbot-default-btn {
         width: 220px;
-        height: 60px;
+        height: 40px;
         font-size: 14px;
-        padding: 16px 22px;
     }
     
     .chatbot-header {
@@ -660,11 +659,18 @@
     
     #chatbot-input {
         font-size: 14px;
-        padding: 12px 50px 12px 12px;
+        padding: 12px 60px 12px 12px;
     }
     
     /* Smaller send button on mobile */
     #send-btn {
+        width: 36px;
+        height: 36px;
+        right: 12px;
+    }
+    
+    /* Keep same button size when active on mobile */
+    #send-btn.active {
         width: 36px;
         height: 36px;
         right: 12px;
