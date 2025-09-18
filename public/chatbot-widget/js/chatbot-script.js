@@ -18,7 +18,7 @@ jQuery(document).ready(function($) {
 
     minimizeBtn.on('click', function() {
         chatbotWindow.hide();
-        chatbotMinimizedBtn.show();
+        chatbotDefaultBtn.show();
     });
 
     chatbotMinimizedBtn.on('click', function() {
@@ -28,7 +28,7 @@ jQuery(document).ready(function($) {
 
     closeBtn.on('click', function() {
         chatbotWindow.hide();
-        chatbotDefaultBtn.show();
+        chatbotMinimizedBtn.show();
     });
 
     // Handle common questions

@@ -27,13 +27,13 @@ const Chatbot = () => {
   };
 
   const closeChatbot = () => {
-    setIsOpen(false);
-    setIsMinimized(true);
-    setInputValue("");
+    setShowClearModal(true);
   };
 
   const minimizeChatbot = () => {
-    setShowClearModal(true);
+    setIsOpen(false);
+    setIsMinimized(true);
+    setInputValue("");
   };
 
   const handleClearChat = () => {
@@ -155,8 +155,8 @@ const Chatbot = () => {
             </div>
             <div className="chatbot-header-actions">
               <img src="/chatbot-widget/images/ic_round-call (1).png" alt="Call" className="header-icon call-icon" title="Call" />
-              <img src="/chatbot-widget/images/mdi_minimize.png" alt="Restart" className="header-icon minimize-icon" onClick={minimizeChatbot} title="Restart" />
-              <img src="/chatbot-widget/images/basil_cross-solid.png" alt="Close" className="header-icon close-icon" onClick={closeChatbot} title="Close" />
+              <img src="/chatbot-widget/images/mdi_minimize.png" alt="Minimize" className="header-icon minimize-icon" onClick={minimizeChatbot} title="Minimize" />
+              <img src="/chatbot-widget/images/basil_cross-solid.png" alt="Restart" className="header-icon close-icon" onClick={closeChatbot} title="Restart" />
             </div>
           </div>
 
