@@ -27,7 +27,15 @@ const Chatbot = () => {
   };
 
   const closeChatbot = () => {
-    setShowClearModal(true);
+    if (hasSentMessage) {
+      // If chat has started, show clear modal
+      setShowClearModal(true);
+    } else {
+      // If no chat yet, just close the chatbot
+      setIsOpen(false);
+      setIsMinimized(true);
+      setInputValue("");
+    }
   };
 
   const minimizeChatbot = () => {
@@ -156,7 +164,7 @@ const Chatbot = () => {
             <div className="chatbot-header-actions">
               <img src="/chatbot-widget/images/ic_round-call (1).png" alt="Call" className="header-icon call-icon" title="Call" />
               <img src="/chatbot-widget/images/mdi_minimize.png" alt="Minimize" className="header-icon minimize-icon" onClick={minimizeChatbot} title="Minimize" />
-              <img src="/chatbot-widget/images/basil_cross-solid.png" alt="Restart" className="header-icon close-icon" onClick={closeChatbot} title="Restart" />
+              <img src="/chatbot-widget/images/basil_cross-solid.png" alt={hasSentMessage ? "Restart" : "Close"} className="header-icon close-icon" onClick={closeChatbot} title={hasSentMessage ? "Restart" : "Close"} />
             </div>
           </div>
 
