@@ -447,12 +447,14 @@
     #chatbot-container {
         bottom: 10px;
         right: 10px;
+        left: 10px;
     }
     
     #chatbot-window {
         width: calc(100vw - 20px);
         max-width: 380px;
         height: 520px;
+        margin: 0 auto;
     }
     
     #chatbot-window.expanded {
@@ -460,66 +462,189 @@
     }
     
     #chatbot-default-btn {
-        width: 250px;
-        height: 45px;
+        width: calc(100vw - 40px);
+        max-width: 320px;
+        height: 55px;
+        margin: 0 auto;
+    }
+    
+    #start-conversation-btn {
+        height: 55px;
+        padding: 12px 18px;
+        font-size: 15px;
+        font-weight: 500;
+    }
+    
+    .conversation-icon {
+        width: 18px;
+        height: 18px;
+        margin-right: 8px;
     }
     
     .common-question {
-        width: calc(100% - 20px);
+        width: 100%;
         height: auto;
-        min-height: 32px;
+        min-height: 40px;
         font-size: 14px;
+        padding: 12px 15px;
     }
 }
 
 @media (max-width: 480px) {
+    #chatbot-container {
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+        width: calc(100vw - 20px);
+    }
+    
     #chatbot-window {
-        width: calc(100vw - 10px);
-        height: 480px;
-        bottom: 5px;
-        right: 5px;
+        width: 100%;
+        max-width: none;
+        height: 70vh;
+        max-height: 500px;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        margin: 0 10px;
     }
     
     #chatbot-window.expanded {
-        height: 580px;
+        height: 80vh;
+        max-height: 600px;
     }
     
     #chatbot-default-btn {
-        width: 220px;
-        height: 40px;
-        font-size: 14px;
+        width: 100%;
+        max-width: 320px;
+        height: 60px;
+        font-size: 16px;
+        padding: 14px 20px;
+        border-radius: 25px;
+    }
+    
+    #start-conversation-btn {
+        height: 60px;
+        padding: 14px 20px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 25px;
+    }
+    
+    .conversation-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
     }
     
     .chatbot-header {
-        padding: 8px;
+        padding: 12px 15px;
     }
     
     .chatbot-body {
-        padding: 10px;
+        padding: 12px 15px;
     }
     
     .chatbot-message-admin {
-        padding: 8px;
-        gap: 8px;
+        padding: 10px;
+        gap: 10px;
+        margin-bottom: 10px;
     }
     
     .chatbot-footer {
-        padding: 8px;
+        padding: 12px 15px;
     }
     
     #chatbot-input {
+        font-size: 16px;
+        padding: 15px 70px 15px 15px;
+        border-radius: 8px;
+    }
+    
+    #send-btn {
+        width: 50px;
+        height: 50px;
+        right: 20px;
+    }
+    
+    .common-question {
+        width: 100%;
+        padding: 15px;
+        font-size: 15px;
+        height: auto;
+        min-height: 45px;
+        display: flex;
+        align-items: center;
+        border-radius: 12px;
+    }
+    
+    .common-questions-title {
         font-size: 14px;
-        padding: 12px 60px 12px 12px;
+        margin-bottom: 10px;
+    }
+    
+    .chatbot-common-questions {
+        gap: 12px;
+        margin-bottom: 15px;
     }
 }
 
-@media (max-height: 600px) {
+@media (max-width: 360px) {
+    #chatbot-container {
+        bottom: 5px;
+        right: 5px;
+        left: 5px;
+    }
+    
     #chatbot-window {
-        height: 420px;
+        width: calc(100vw - 10px);
+        height: 65vh;
+        max-height: 450px;
+        margin: 0;
     }
     
     #chatbot-window.expanded {
-        height: 520px;
+        height: 75vh;
+        max-height: 550px;
+    }
+    
+    #chatbot-default-btn {
+        width: calc(100vw - 20px);
+        max-width: 300px;
+        height: 65px;
+        font-size: 15px;
+    }
+    
+    #start-conversation-btn {
+        height: 65px;
+        padding: 16px 22px;
+        font-size: 15px;
+        font-weight: 600;
+    }
+    
+    .conversation-icon {
+        width: 22px;
+        height: 22px;
+        margin-right: 12px;
+    }
+    
+    .chatbot-body {
+        padding: 10px 12px;
+    }
+    
+    .chatbot-footer {
+        padding: 10px 12px;
+    }
+    
+    #chatbot-input {
+        padding: 12px 65px 12px 12px;
+        font-size: 16px;
+    }
+    
+    .common-question {
+        padding: 12px;
+        font-size: 14px;
+        min-height: 42px;
     }
 }
 
