@@ -146,6 +146,12 @@
     flex-direction: column;
     animation: slideUp 0.3s ease-out;
     transform-origin: bottom right;
+    transition: height 0.3s ease;
+}
+
+/* Expanded chat window when conversation has started */
+#chatbot-window.expanded {
+    height: 550px;
 }
 
 @keyframes slideUp {
@@ -445,6 +451,10 @@
     #chatbot-window {
         width: calc(100vw - 20px);
         max-width: 380px;
+        height: 450px;
+    }
+    
+    #chatbot-window.expanded {
         height: 500px;
     }
     
@@ -464,9 +474,13 @@
 @media (max-width: 480px) {
     #chatbot-window {
         width: calc(100vw - 10px);
-        height: 500px;
+        height: 400px;
         bottom: 5px;
         right: 5px;
+    }
+    
+    #chatbot-window.expanded {
+        height: 450px;
     }
     
     #chatbot-default-btn {
@@ -500,13 +514,21 @@
 
 @media (max-height: 600px) {
     #chatbot-window {
-        height: 500px;
+        height: 400px;
+    }
+    
+    #chatbot-window.expanded {
+        height: 450px;
     }
 }
 
 @media (max-height: 500px) {
     #chatbot-window {
-        height: 450px;
+        height: 350px;
+    }
+    
+    #chatbot-window.expanded {
+        height: 400px;
     }
     
     .chatbot-body {

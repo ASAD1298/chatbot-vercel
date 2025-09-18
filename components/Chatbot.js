@@ -116,7 +116,7 @@ const Chatbot = () => {
       )}
 
       {isOpen && (
-        <div id="chatbot-window">
+        <div id="chatbot-window" className={hasSentMessage ? "expanded" : ""}>
           <div className="chatbot-header">
             <div className="chatbot-header-info">
               <img id="vic-avatar-header" src="/chatbot-widget/images/vic-avatar.png" alt="Vic" />
