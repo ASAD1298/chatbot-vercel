@@ -31,9 +31,9 @@ const Chatbot = () => {
       // If chat has started, show clear modal
       setShowClearModal(true);
     } else {
-      // If no chat yet, just close the chatbot
+      // If no chat yet, just close the chatbot and show start button
       setIsOpen(false);
-      setIsMinimized(true);
+      setIsMinimized(false);
       setInputValue("");
     }
   };
