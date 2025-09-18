@@ -138,7 +138,7 @@
 /* Chat Window */
 #chatbot-window {
     width: 380px;
-    height: 500px;
+    height: 350px;
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -151,7 +151,7 @@
 
 /* Expanded chat window when conversation has started */
 #chatbot-window.expanded {
-    height: 550px;
+    height: 520px;
 }
 
 @keyframes slideUp {
