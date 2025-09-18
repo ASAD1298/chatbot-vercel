@@ -608,6 +608,8 @@
     #chatbot-default-btn {
         width: 250px;
         height: 45px;
+        margin-left: auto;
+        margin-right: 0;
     }
     
     .common-question {
@@ -638,6 +640,8 @@
         width: 220px;
         height: 40px;
         font-size: 14px;
+        margin-left: auto;
+        margin-right: 0;
     }
     
     .chatbot-header {
