@@ -739,13 +739,13 @@
     }
     
     .send-icon-default {
-        width: 20px;
-        height: 20px;
+        width: 24px;
+        height: 24px;
     }
     
     #send-btn.active::after {
-        width: 20px;
-        height: 20px;
+        width: 24px;
+        height: 24px;
     }
 }
 
