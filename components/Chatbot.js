@@ -1,5 +1,5 @@
 // components/Chatbot.js
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,6 +14,15 @@ const Chatbot = () => {
       content: "Hi! How can I assist you in finding the right solution for your need?",
     },
   ]);
+
+  const chatBodyRef = useRef(null);
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    if (chatBodyRef.current) {
+      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const commonQuestions = [
     "I want to buy products",
@@ -168,7 +177,7 @@ const Chatbot = () => {
             </div>
           </div>
 
-          <div className="chatbot-body">
+          <div className="chatbot-body" ref={chatBodyRef}>
             {messages.map((msg, idx) => (
               msg.type === "admin" ? (
                 <div key={idx} className="chatbot-message chatbot-message-admin">
