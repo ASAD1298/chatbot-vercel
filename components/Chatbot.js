@@ -7,6 +7,7 @@ const Chatbot = () => {
   const [inputValue, setInputValue] = useState("");
   const [hasSentMessage, setHasSentMessage] = useState(false);
   const [showClearModal, setShowClearModal] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState([
     {
       type: "admin",
@@ -87,8 +88,12 @@ const Chatbot = () => {
     // Clear input field
     setInputValue("");
 
-    // Simulate admin response
+    // Show typing indicator
+    setIsTyping(true);
+
+    // Simulate admin response with delay
     setTimeout(() => {
+      setIsTyping(false);
       setMessages((prev) => [
         ...prev,
         {
@@ -97,7 +102,7 @@ const Chatbot = () => {
           content: "Thank you! We will assist you shortly.",
         },
       ]);
-    }, 1000);
+    }, 2500);
   };
 
   const handleKeyPress = (e) => {
@@ -113,8 +118,12 @@ const Chatbot = () => {
     // Mark that user has sent a message
     setHasSentMessage(true);
     
-    // Simulate admin response
+    // Show typing indicator
+    setIsTyping(true);
+    
+    // Simulate admin response with delay
     setTimeout(() => {
+      setIsTyping(false);
       setMessages((prev) => [
         ...prev,
         {
@@ -123,7 +132,7 @@ const Chatbot = () => {
           content: "Thank you for your question! We will assist you shortly.",
         },
       ]);
-    }, 1000);
+    }, 2500);
   };
 
   return (
@@ -191,6 +200,18 @@ const Chatbot = () => {
                 </div>
               )
             ))}
+
+            {/* Typing indicator */}
+            {isTyping && (
+              <div className="chatbot-message chatbot-message-admin typing-indicator">
+                <img className="admin-avatar" src="/chatbot-widget/images/vic-avatar.png" alt="Admin" />
+                <div className="typing-dots">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+            )}
 
             {!hasSentMessage && (
               <div className="chatbot-common-questions">
