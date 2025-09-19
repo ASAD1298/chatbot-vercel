@@ -198,7 +198,7 @@
 }
 
 .chatbot-header-info span {
-    font-size: 1px;
+    font-size: 15px;
     font-weight: 500;
     color: #fff;
 }
@@ -645,9 +645,8 @@
 /* Responsive Design */
 @media (max-width: 768px) {
     #chatbot-container {
-        bottom: 10px;
-        right: 10px;
-        left: 10px;
+        bottom: 20px;
+        right: 20px;
     }
     
     #chatbot-window {
@@ -670,8 +669,12 @@
     .common-question {
         width: calc(100% - 20px);
         height: auto;
-        min-height: 32px;
+        min-height: 30px;
         font-size: 14px;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        line-height: 1.2;
     }
 }
 
@@ -736,13 +739,13 @@
     }
     
     .send-icon-default {
-        width: 16px;
-        height: 16px;
+        width: 20px;
+        height: 20px;
     }
     
     #send-btn.active::after {
-        width: 14px;
-        height: 14px;
+        width: 20px;
+        height: 20px;
     }
 }
 
@@ -775,7 +778,11 @@
     }
     
     .common-question {
-        padding: 8px;
-        margin-bottom: 6px;
+        padding: 12px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        min-height: 30px;
+        line-height: 1.2;
     }
 }
