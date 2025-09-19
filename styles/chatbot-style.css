@@ -726,26 +726,26 @@
     
     /* Smaller send button on mobile */
     #send-btn {
-        width: 36px;
+        width: 34px;
         height: 36px;
         right: 12px;
     }
     
     /* Keep same button size when active on mobile */
     #send-btn.active {
-        width: 36px;
+        width: 34px;
         height: 36px;
         right: 12px;
     }
     
     .send-icon-default {
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
     }
     
     #send-btn.active::after {
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
     }
 }
 
