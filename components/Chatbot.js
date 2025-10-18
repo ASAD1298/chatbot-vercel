@@ -12,7 +12,8 @@ const Chatbot = () => {
     {
       type: "admin",
       avatar: "/chatbot-widget/images/vic-avatar.png",
-      content: "Hi! How can I assist you in finding the right solution for your need?",
+      content:
+        "Hi! How can I assist you in finding the right solution for your need?",
     },
   ]);
 
@@ -38,10 +39,8 @@ const Chatbot = () => {
 
   const closeChatbot = () => {
     if (hasSentMessage) {
-      // If chat has started, show clear modal
       setShowClearModal(true);
     } else {
-      // If no chat yet, just close the chatbot and show start button
       setIsOpen(false);
       setIsMinimized(false);
       setInputValue("");
@@ -55,12 +54,12 @@ const Chatbot = () => {
   };
 
   const handleClearChat = () => {
-    // Clear chat and reset to initial state
     setMessages([
       {
         type: "admin",
         avatar: "/chatbot-widget/images/vic-avatar.png",
-        content: "Hi! How can I assist you in finding the right solution for your need?",
+        content:
+          "Hi! How can I assist you in finding the right solution for your need?",
       },
     ]);
     setHasSentMessage(false);
@@ -76,84 +75,131 @@ const Chatbot = () => {
     setInputValue(e.target.value);
   };
 
-  const handleSend = () => {
+  // 🟢 UPDATED: Send message to n8n webhook
+  const handleSend = async () => {
     if (!inputValue.trim()) return;
-    
-    // Add user message
-    setMessages(prev => [...prev, { type: "user", content: inputValue }]);
-    
-    // Mark that user has sent a message
-    setHasSentMessage(true);
-    
-    // Clear input field
-    setInputValue("");
 
-    // Show typing indicator
+    const userMessage = inputValue;
+    setMessages((prev) => [...prev, { type: "user", content: userMessage }]);
+    setHasSentMessage(true);
+    setInputValue("");
     setIsTyping(true);
 
-    // Simulate admin response with delay
-    setTimeout(() => {
+    try {
+      // 🔗 Send message to your n8n webhook
+      const response = await fetch("https://asad902.app.n8n.cloud/webhook-test/chatbot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userMessage }),
+      });
+
+      const data = await response.json();
+      setIsTyping(false);
+
+      // 🧠 Add chatbot reply to messages
+      setMessages((prev) => [
+        ...prev,
+        {
+          type: "admin",
+          avatar: "/chatbot-widget/images/vic-avatar.png",
+          content: data.reply || "Sorry, I didn’t get a response.",
+        },
+      ]);
+    } catch (error) {
+      console.error("Chatbot error:", error);
       setIsTyping(false);
       setMessages((prev) => [
         ...prev,
         {
           type: "admin",
           avatar: "/chatbot-widget/images/vic-avatar.png",
-          content: "Thank you! We will assist you shortly.",
+          content:
+            "⚠️ There was an error connecting to the chatbot. Please try again.",
         },
       ]);
-    }, 2500);
+    }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && inputValue.trim()) {
+    if (e.key === "Enter" && inputValue.trim()) {
       handleSend();
     }
   };
 
-  const handleCommonQuestionClick = (question) => {
-    // Send the question directly instead of setting it in input
-    setMessages(prev => [...prev, { type: "user", content: question }]);
-    
-    // Mark that user has sent a message
+  // 🟣 UPDATED: Common question click → send to webhook
+  const handleCommonQuestionClick = async (question) => {
+    setMessages((prev) => [...prev, { type: "user", content: question }]);
     setHasSentMessage(true);
-    
-    // Show typing indicator
     setIsTyping(true);
-    
-    // Simulate admin response with delay
-    setTimeout(() => {
+
+    try {
+      const response = await fetch("https://asad902.app.n8n.cloud/webhook-test/chatbot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: question }),
+      });
+
+      const data = await response.json();
+      setIsTyping(false);
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          type: "admin",
+          avatar: "/chatbot-widget/images/vic-avatar.png",
+          content: data.reply || "Sorry, I didn’t get a response.",
+        },
+      ]);
+    } catch (error) {
+      console.error("Chatbot error:", error);
       setIsTyping(false);
       setMessages((prev) => [
         ...prev,
         {
           type: "admin",
           avatar: "/chatbot-widget/images/vic-avatar.png",
-          content: "Thank you for your question! We will assist you shortly.",
+          content:
+            "⚠️ There was an error connecting to the chatbot. Please try again.",
         },
       ]);
-    }, 2500);
+    }
   };
 
   return (
     <div id="chatbot-container">
       {!isOpen && !isMinimized && (
         <div id="chatbot-default-btn" className="chatbot-btn">
-          <img id="vic-avatar-btn" src="/chatbot-widget/images/vic-avatar.png" alt="Vic" />
+          <img
+            id="vic-avatar-btn"
+            src="/chatbot-widget/images/vic-avatar.png"
+            alt="Vic"
+          />
           <button id="start-conversation-btn" onClick={startConversation}>
-            <img src="/chatbot-widget/images/Vector.png" alt="Chat" className="conversation-icon" />
+            <img
+              src="/chatbot-widget/images/Vector.png"
+              alt="Chat"
+              className="conversation-icon"
+            />
             Start a conversation
           </button>
         </div>
       )}
 
       {isMinimized && (
-        <div id="chatbot-minimized-btn" className="chatbot-btn minimized-btn" onClick={() => {
-          setIsMinimized(false);
-          setIsOpen(true);
-        }}>
+        <div
+          id="chatbot-minimized-btn"
+          className="chatbot-btn minimized-btn"
+          onClick={() => {
+            setIsMinimized(false);
+            setIsOpen(true);
+          }}
+        >
           <div className="chatbot-icon-wrapper">
-            <img src="/chatbot-widget/images/chat-icon-minimized.png" alt="Chat Icon" className="minimized-chat-image" />
+            <img
+              src="/chatbot-widget/images/chat-icon-minimized.png"
+              alt="Chat Icon"
+              className="minimized-chat-image"
+            />
             <span className="notification-dot"></span>
           </div>
         </div>
@@ -166,31 +212,64 @@ const Chatbot = () => {
             <div className="clear-modal-overlay">
               <div className="clear-modal">
                 <h3 className="clear-modal-title">Clear chat</h3>
-                <p className="clear-modal-message">After clearing history you won't be able to access previous chats.</p>
+                <p className="clear-modal-message">
+                  After clearing history you won't be able to access previous
+                  chats.
+                </p>
                 <div className="clear-modal-actions">
-                  <button className="cancel-btn" onClick={handleCancelClear}>Cancel</button>
-                  <button className="clear-btn" onClick={handleClearChat}>Clear chat</button>
+                  <button className="cancel-btn" onClick={handleCancelClear}>
+                    Cancel
+                  </button>
+                  <button className="clear-btn" onClick={handleClearChat}>
+                    Clear chat
+                  </button>
                 </div>
               </div>
             </div>
           )}
+
           <div className="chatbot-header">
             <div className="chatbot-header-info">
-              <img id="vic-avatar-header" src="/chatbot-widget/images/vic-avatar.png" alt="Vic" />
+              <img
+                id="vic-avatar-header"
+                src="/chatbot-widget/images/vic-avatar.png"
+                alt="Vic"
+              />
               <span>Vic</span>
             </div>
             <div className="chatbot-header-actions">
-              <img src="/chatbot-widget/images/ic_round-call (1).png" alt="Call" className="header-icon call-icon" title="Call" />
-              <img src="/chatbot-widget/images/mdi_minimize.png" alt="Minimize" className="header-icon minimize-icon" onClick={minimizeChatbot} title="Minimize" />
-              <img src="/chatbot-widget/images/basil_cross-solid.png" alt={hasSentMessage ? "Restart" : "Close"} className="header-icon close-icon" onClick={closeChatbot} title={hasSentMessage ? "Restart" : "Close"} />
+              <img
+                src="/chatbot-widget/images/ic_round-call (1).png"
+                alt="Call"
+                className="header-icon call-icon"
+                title="Call"
+              />
+              <img
+                src="/chatbot-widget/images/mdi_minimize.png"
+                alt="Minimize"
+                className="header-icon minimize-icon"
+                onClick={minimizeChatbot}
+                title="Minimize"
+              />
+              <img
+                src="/chatbot-widget/images/basil_cross-solid.png"
+                alt={hasSentMessage ? "Restart" : "Close"}
+                className="header-icon close-icon"
+                onClick={closeChatbot}
+                title={hasSentMessage ? "Restart" : "Close"}
+              />
             </div>
           </div>
 
           <div className="chatbot-body" ref={chatBodyRef}>
-            {messages.map((msg, idx) => (
+            {messages.map((msg, idx) =>
               msg.type === "admin" ? (
                 <div key={idx} className="chatbot-message chatbot-message-admin">
-                  <img className="admin-avatar" src={msg.avatar} alt="Admin" />
+                  <img
+                    className="admin-avatar"
+                    src={msg.avatar}
+                    alt="Admin"
+                  />
                   <div className="message-content">{msg.content}</div>
                 </div>
               ) : (
@@ -199,12 +278,16 @@ const Chatbot = () => {
                   <span className="user-icon" aria-hidden="true"></span>
                 </div>
               )
-            ))}
+            )}
 
             {/* Typing indicator */}
             {isTyping && (
               <div className="chatbot-message chatbot-message-admin typing-indicator">
-                <img className="admin-avatar" src="/chatbot-widget/images/vic-avatar.png" alt="Admin" />
+                <img
+                  className="admin-avatar"
+                  src="/chatbot-widget/images/vic-avatar.png"
+                  alt="Admin"
+                />
                 <div className="typing-dots">
                   <span></span>
                   <span></span>
@@ -215,7 +298,9 @@ const Chatbot = () => {
 
             {!hasSentMessage && (
               <div className="chatbot-common-questions">
-                <div className="common-questions-title">Common questions are:</div>
+                <div className="common-questions-title">
+                  Common questions are:
+                </div>
                 {commonQuestions.map((q, idx) => (
                   <div
                     key={idx}
@@ -247,7 +332,11 @@ const Chatbot = () => {
               disabled={!inputValue.trim()}
             >
               {!inputValue.trim() && (
-                <img src="/chatbot-widget/images/send-btn-chatbot.png" alt="Send" className="send-icon-default" />
+                <img
+                  src="/chatbot-widget/images/send-btn-chatbot.png"
+                  alt="Send"
+                  className="send-icon-default"
+                />
               )}
             </button>
           </div>
