@@ -87,7 +87,7 @@ const Chatbot = () => {
 
     try {
       // 🔗 Send message to your n8n webhook
-      const response = await fetch("https://asad902.app.n8n.cloud/webhook-test/chatbot", {
+      const response = await fetch("https://asad902.app.n8n.cloud/webhook/chatbot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: userMessage }),
@@ -133,7 +133,7 @@ const Chatbot = () => {
     setIsTyping(true);
 
     try {
-      const response = await fetch("https://asad902.app.n8n.cloud/webhook-test/chatbot", {
+      const response = await fetch("https://asad902.app.n8n.cloud/webhook/chatbot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: question }),
