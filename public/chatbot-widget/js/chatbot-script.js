@@ -63,7 +63,7 @@ jQuery(document).ready(function($) {
         }
     });
 
-    function sendMessage(message) {
+    async function sendMessage(message) {
         // Append user message: plain text with small user icon on the right
         var userRow = $('<div class="chatbot-user-row"></div>');
         var userText = $('<span class="user-text"></span>').text(message);
@@ -75,23 +75,47 @@ jQuery(document).ready(function($) {
         chatbotInput.val('');
         chatbotInput.removeClass('active');
         sendBtn.removeClass('active').prop('disabled', true);
-        
-        // Simulate a response (could be admin or bot)
-        setTimeout(function() {
-            // For demo purposes, let's make some responses come from admin
+
+        // Try to send the message to the n8n webhook and display the reply
+        try {
+            var resp = await fetch('https://asad902.app.n8n.cloud/webhook/chatbot', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            });
+
+            if (resp.ok) {
+                var data = await resp.json();
+                // Expecting the workflow to return { reply: '...' }
+                if (data && data.reply) {
+                    addAdminMessage(data.reply);
+                } else if (data && data.body && data.body.reply) {
+                    // in case n8n returns wrapped body
+                    addAdminMessage(data.body.reply);
+                } else {
+                    // Fallback message if webhook returns no useful payload
+                    addBotMessage('Thank you for your message. The chatbot received your request.');
+                }
+            } else {
+                // Non-OK response: fall back to a local reply
+                console.error('Webhook responded with status', resp.status);
+                addBotMessage('Sorry, could not fetch a reply from server. Please try again later.');
+            }
+        } catch (err) {
+            // Network / CORS / other errors: fallback to simulated response
+            console.error('Error sending message to webhook:', err);
             var isAdminResponse = message.toLowerCase().includes('admin') || 
-                                message.toLowerCase().includes('help') || 
-                                message.toLowerCase().includes('support');
-            
+                                  message.toLowerCase().includes('help') || 
+                                  message.toLowerCase().includes('support');
             if (isAdminResponse) {
                 addAdminMessage('Thank you for contacting us! An admin will assist you shortly with your request.');
             } else {
                 addBotMessage('Thank you for your message. I am processing your request.');
             }
-            
-            // Scroll to the bottom of the chat
-            chatConversation.scrollTop(chatConversation[0].scrollHeight);
-        }, 1000);
+        }
+
+        // Scroll to the bottom of the chat
+        chatConversation.scrollTop(chatConversation[0].scrollHeight);
     }
 
     // Function to add admin message with avatar
