@@ -281,55 +281,32 @@ const Chatbot = () => {
             {messages.map((msg, idx) =>
               msg.type === "admin" ? (
                 <div key={idx} className="chatbot-message chatbot-message-admin">
-                  <img
-                    className="admin-avatar"
-                    src={msg.avatar}
-                    try {
-                      const response = await fetch("https://asad902.app.n8n.cloud/webhook/chatbot", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ message: question }),
-                      });
-
-                      const raw = await response.text();
-                      setIsTyping(false);
-
-                      let parsed = null;
-                      try {
-                        parsed = raw ? JSON.parse(raw) : null;
-                      } catch (e) {
-                        parsed = null;
-                      }
-
-                      console.log('n8n webhook status (common question):', response.status);
-                      console.log('n8n webhook raw response (common question):', raw);
-                      console.log('n8n webhook parsed response (common question):', parsed);
-
-                      const replyText = (parsed && (parsed.reply || (parsed.body && parsed.body.reply))) || (raw && raw.trim()) || null;
-
-                      setMessages((prev) => [
-                        ...prev,
-                        {
-                          type: "admin",
-                          avatar: "/chatbot-widget/images/vic-avatar.png",
-                          content: replyText || `Sorry, I didn\u2019t get a response (status ${response.status}). Check console/network.`,
-                        },
-                      ]);
-                    } catch (error) {
-                      console.error("Chatbot error:", error);
-                      setIsTyping(false);
-                      setMessages((prev) => [
-                        ...prev,
-                        {
-                          type: "admin",
-                          avatar: "/chatbot-widget/images/vic-avatar.png",
-                          content:
-                            "\u26a0\ufe0f There was an error connecting to the chatbot. Please check your network or CORS settings.",
-                        },
-                      ]);
-                    }
-                  Common questions are:
+                  <img className="admin-avatar" src={msg.avatar} alt="Admin" />
+                  <div className="message-content">{msg.content}</div>
                 </div>
+              ) : (
+                <div key={idx} className="chatbot-user-row">
+                  <span className="user-text">{msg.content}</span>
+                  <span className="user-icon" aria-hidden="true"></span>
+                </div>
+              )
+            )}
+
+            {/* Typing indicator */}
+            {isTyping && (
+              <div className="chatbot-message chatbot-message-admin typing-indicator">
+                <img className="admin-avatar" src="/chatbot-widget/images/vic-avatar.png" alt="Admin" />
+                <div className="typing-dots">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+            )}
+
+            {!hasSentMessage && (
+              <div className="chatbot-common-questions">
+                <div className="common-questions-title">Common questions are:</div>
                 {commonQuestions.map((q, idx) => (
                   <div
                     key={idx}
