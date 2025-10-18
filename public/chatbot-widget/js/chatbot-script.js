@@ -70,47 +70,82 @@ jQuery(document).ready(function($) {
         var userIcon = $('<span class="user-icon" aria-hidden="true"></span>');
         userRow.append(userText).append(userIcon);
         chatConversation.append(userRow);
+
+        // Show temporary "sending" indicator
+        var sendingRow = $('<div class="chatbot-message chatbot-message-admin sending-row"></div>');
+        var sendingAvatar = $('<img class="admin-avatar" alt="Vic">').attr('src', chatbotData.vicAvatarUrl);
+        sendingRow.append(sendingAvatar).append($('<div class="message-content"></div>').text('Sending...'));
+        chatConversation.append(sendingRow);
         
         // Clear input field and reset button state
         chatbotInput.val('');
         chatbotInput.removeClass('active');
         sendBtn.removeClass('active').prop('disabled', true);
 
+        // Debug: log request
+        console.log('[chatbot] POST -> https://asad902.app.n8n.cloud/webhook/chatbot', { message: message });
+
         // Try to send the message to the n8n webhook and display the reply
         try {
             var resp = await fetch('https://asad902.app.n8n.cloud/webhook/chatbot', {
                 method: 'POST',
+                mode: 'cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: message })
             });
 
+            console.log('[chatbot] response status:', resp.status, resp.statusText);
+
+            // Read raw text first so non-JSON responses can be inspected
+            var raw = await resp.text();
+            console.log('[chatbot] raw response body:', raw);
+
+            // Try parse JSON if present
+            var data = null;
+            try {
+                data = raw ? JSON.parse(raw) : null;
+            } catch (jsonErr) {
+                console.warn('[chatbot] response is not JSON:', jsonErr);
+            }
+
+            // Remove sending indicator
+            sendingRow.remove();
+
             if (resp.ok) {
-                var data = await resp.json();
                 // Expecting the workflow to return { reply: '...' }
                 if (data && data.reply) {
                     addAdminMessage(data.reply);
                 } else if (data && data.body && data.body.reply) {
                     // in case n8n returns wrapped body
                     addAdminMessage(data.body.reply);
+                } else if (raw && raw.trim().length > 0) {
+                    // fallback: show raw text
+                    addAdminMessage(raw);
                 } else {
                     // Fallback message if webhook returns no useful payload
-                    addBotMessage('Thank you for your message. The chatbot received your request.');
+                    addBotMessage('Thank you for your message. The chatbot received your request (no reply body).');
                 }
             } else {
-                // Non-OK response: fall back to a local reply
-                console.error('Webhook responded with status', resp.status);
-                addBotMessage('Sorry, could not fetch a reply from server. Please try again later.');
+                // Non-OK response: show error + console details
+                console.error('[chatbot] Webhook responded with status', resp.status, raw);
+                addBotMessage('Server returned status ' + resp.status + '. Check n8n workflow or network.');
             }
         } catch (err) {
             // Network / CORS / other errors: fallback to simulated response
-            console.error('Error sending message to webhook:', err);
+            console.error('[chatbot] Error sending message to webhook:', err);
+            sendingRow.remove();
+
+            // Show a visible error message so you know the request failed
+            addBotMessage('Network error or blocked by CORS. See console for details.');
+
             var isAdminResponse = message.toLowerCase().includes('admin') || 
                                   message.toLowerCase().includes('help') || 
                                   message.toLowerCase().includes('support');
             if (isAdminResponse) {
                 addAdminMessage('Thank you for contacting us! An admin will assist you shortly with your request.');
             } else {
-                addBotMessage('Thank you for your message. I am processing your request.');
+                // keep fallback short
+                addBotMessage('We received your message locally and will process it.');
             }
         }
 
