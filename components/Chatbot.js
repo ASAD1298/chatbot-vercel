@@ -75,6 +75,39 @@ const Chatbot = () => {
     setInputValue(e.target.value);
   };
 
+  // Helper: send message to n8n webhook and return reply string
+  const sendToWebhook = async (message) => {
+    try {
+      const resp = await fetch("https://asad902.app.n8n.cloud/webhook/chatbot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }),
+      });
+
+      // Read raw text first to be tolerant to non-strict JSON
+      const raw = await resp.text();
+      let parsed = null;
+      try {
+        parsed = raw ? JSON.parse(raw) : null;
+      } catch (e) {
+        parsed = null;
+      }
+
+      // Prefer JSON.reply, then parsed.body.reply, then raw text
+      const reply = (parsed && (parsed.reply || (parsed.body && parsed.body.reply))) || (raw && raw.trim()) || null;
+
+      if (!resp.ok) {
+        // still return what we have (raw or null) but include status for debugging
+        console.error("Webhook returned non-OK status", resp.status, raw);
+      }
+
+      return reply;
+    } catch (err) {
+      console.error("sendToWebhook error:", err);
+      throw err;
+    }
+  };
+
   // 🟢 UPDATED: Send message to n8n webhook
   const handleSend = async () => {
     if (!inputValue.trim()) return;
@@ -84,41 +117,17 @@ const Chatbot = () => {
     setHasSentMessage(true);
     setInputValue("");
     setIsTyping(true);
+
     try {
-      // 🔗 Send message to your n8n webhook
-      const response = await fetch("https://asad902.app.n8n.cloud/webhook/chatbot", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMessage }),
-      });
-
-      // Read raw text first (safer if response isn't strict JSON)
-      const raw = await response.text();
+      const reply = await sendToWebhook(userMessage);
       setIsTyping(false);
-
-      // Try to parse JSON; if it fails, fall back to raw text
-      let parsed = null;
-      try {
-        parsed = raw ? JSON.parse(raw) : null;
-      } catch (e) {
-        // not JSON
-        parsed = null;
-      }
-
-      // Helpful console logs for debugging
-      console.log('n8n webhook status:', response.status);
-      console.log('n8n webhook raw response:', raw);
-      console.log('n8n webhook parsed response:', parsed);
-
-      // Prefer parsed.reply, then parsed.body.reply, then raw text, then fallback
-      const replyText = (parsed && (parsed.reply || (parsed.body && parsed.body.reply))) || (raw && raw.trim()) || null;
 
       setMessages((prev) => [
         ...prev,
         {
           type: "admin",
           avatar: "/chatbot-widget/images/vic-avatar.png",
-          content: replyText || `Sorry, I didn\u2019t get a response (status ${response.status}). Check console/network.`,
+          content: reply || "Sorry, I didn\u2019t get a response.",
         },
       ]);
     } catch (error) {
@@ -149,13 +158,7 @@ const Chatbot = () => {
     setIsTyping(true);
 
     try {
-      const response = await fetch("https://asad902.app.n8n.cloud/webhook/chatbot", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: question }),
-      });
-
-      const data = await response.json();
+      const reply = await sendToWebhook(question);
       setIsTyping(false);
 
       setMessages((prev) => [
@@ -163,7 +166,7 @@ const Chatbot = () => {
         {
           type: "admin",
           avatar: "/chatbot-widget/images/vic-avatar.png",
-          content: data.reply || "Sorry, I didn’t get a response.",
+          content: reply || "Sorry, I didn\u2019t get a response.",
         },
       ]);
     } catch (error) {
